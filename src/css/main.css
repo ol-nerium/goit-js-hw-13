@@ -2,6 +2,16 @@ html {
   box-sizing: border-box;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+img {
+  object-fit: cover;
+}
+
 input[type='text'] {
   width: 80%;
   font-size: 17px;
@@ -11,27 +21,51 @@ input[type='text'] {
 }
 
 button[type='submit'] {
-  float: left;
   width: 20%;
+  float: left;
   padding: 10px;
   font-size: 17px;
-  border-left: none;
-  cursor: pointer;
 
   background-image: url('../images/search.svg#icon-search');
   background-repeat: no-repeat;
   background-position: 50% 50%;
+  background-size: 20%;
 
+  border-left: none;
   border-top: solid 2px #6589df;
   border-bottom: solid 2px #6589df;
 
-  /* outline: 1px solid black; */
+  padding: 0.4rem 0;
+}
+
+button {
+  transition: background-color 300ms ease-in-out;
+}
+
+button:hover {
+  cursor: pointer;
+  background-color: #0b7dda;
+}
+
+.header {
+  background-color: #3f56b4;
+  padding: 10px 0px;
+
+  position: fixed;
+  width: 100vw;
+  /* overflow-y: hidden; */
+}
+
+.search-form {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  max-width: 400px;
+  gap: 0.5rem;
 }
 
 .load-more {
-  /* display: flex; */
   display: none;
-
 
   justify-content: center;
   align-items: center;
@@ -43,38 +77,11 @@ button[type='submit'] {
   margin-top: 20px;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: inherit;
-}
-
-.header {
-  background-color: #3f56b4;
-  padding: 10px 0px;
-
-  /* position: fixed; */
-}
-
-.search-form {
-  display: flex;
-  justify-content: center;
-  margin: auto;
-  max-width: 400px;
-
-  /* outline: 1px solid red; */
-}
-
-.button:hover {
-  background-color: #0b7dda;
-}
-
 .gallery-section {
-  /* outline: 3px solid red; */
-
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 
   flex-wrap: wrap;
   min-height: 100vh;
@@ -83,10 +90,13 @@ button[type='submit'] {
     'Helvetica Neue', sans-serif;
   background-color: #fff;
   color: #212121;
+  overflow-x: hidden;
+  padding-top: 1.5rem;
+  padding: 2rem 0;
 }
 
 .gallery {
-  width: 1200px;
+  max-width: 1200px;
   list-style: none;
   display: flex;
   flex-wrap: wrap;
@@ -98,10 +108,6 @@ button[type='submit'] {
   margin-right: -20px;
   margin-bottom: -20px;
   margin-top: 20px;
-}
-
-img {
-  object-fit: cover;
 }
 
 .photo-card {
