@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Заголовок страницы</title>
+    <title>Search pictures</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/1.0.0/modern-normalize.min.css"
@@ -14,12 +14,7 @@
   <body>
     <header class="header">
       <form class="search-form" id="search-form">
-        <input 
-          type="text" 
-          name="searchQuery" 
-          autocomplete="off" 
-          placeholder="Search images..." 
-        />
+        <input type="text" name="searchQuery" autocomplete="off" placeholder="Search images..." />
         <button type="submit">
           <!-- <img src="./images/search.svg#icon-search" alt="" width="30px" /> -->
 
@@ -29,9 +24,9 @@
     </header>
 
     <main class="gallery-section">
-      <div class="gallery js-gallery">
-        <!-- Карточки изображений -->
-      </div>
+      <ul class="gallery js-gallery">
+        <!-- gallery pictures-->
+      </ul>
       <button type="button" class="load-more">Load more!</button>
     </main>
 
