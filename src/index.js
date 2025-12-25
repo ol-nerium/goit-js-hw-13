@@ -1,39 +1,40 @@
-import './css/main.css';
-import ImageCardsService from './js/images-api-service';
 import Notiflix from 'notiflix';
-import imageCardTpl from './templates/image-card.hbs';
-
-// import ImageCardsService from './js/images-api-service(old)';
-require('handlebars');
 import SimpleLightbox from 'simplelightbox';
+
+import './css/main.css';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+
+import ImageCardsService from './js/images-api-service';
+import imageCardTpl from './templates/image-card.hbs';
 
 const debounce = require('lodash.debounce');
 const DEBOUNCE_DELAY = 300;
 
 const gallery = document.querySelector('.js-gallery');
-const imageCardsService = new ImageCardsService();
-
 const loadMoreBtn = document.querySelector('.load-more');
 const searchForm = document.querySelector('.search-form');
+let lightbox = new SimpleLightbox('.photo-card a');
 
-let cardsCounter = 0;
-let isAll = (cardsCounter = null);
+const imageCardsService = new ImageCardsService();
+let cardsCounter = null;
+let isAllCardsLoaded = null;
 
-// searchForm.addEventListener('submit', debounce(getNewCards, DEBOUNCE_DELAY));
-searchForm.addEventListener('submit', getNewCards);
-
-loadMoreBtn.addEventListener('click', uploadNewCards);
-
-var lightbox = new SimpleLightbox('.photo-card a');
+const debouncedGetNewCards = debounce(getNewCards, DEBOUNCE_DELAY);
+const debouncedUploadNewCards = debounce(uploadNewCards, DEBOUNCE_DELAY);
+searchForm.addEventListener('submit', e => {
+  e.preventDefault();
+  debouncedGetNewCards(e);
+});
+loadMoreBtn.addEventListener('click', e => {
+  e.preventDefault();
+  debouncedUploadNewCards(e);
+});
 
 function getNewCards(event) {
-  event.preventDefault();
-
   loadMoreBtn.style.display = '';
   cardsCounter = 0;
 
-  imageCardsService.query = event.currentTarget.elements.searchQuery.value;
+  imageCardsService.query = event.target.elements.searchQuery.value;
   imageCardsService.resetPage();
   imageCardsService.fetchCards().then(imageCard => {
     clearGallery();
@@ -47,9 +48,8 @@ function getNewCards(event) {
     Notiflix.Notify.success(`Hooray! We found ${imageCard.totalHits} images.`);
 
     appendImageCards(imageCard);
-    loadMoreBtn.style.display = 'flex';
+    loadMoreBtn.style.display = 'block';
     checkCardsAmount(imageCard);
-    console.log('Ща должен быть рефреш')
     lightbox.refresh();
   });
 }
@@ -58,16 +58,11 @@ function uploadNewCards(event) {
   event.preventDefault();
 
   imageCardsService.increment();
-  imageCardsService
-    .fetchCards()
-    .then(imageCard => {
-      return imageCard;
-    })
-    .then(imageCard => {
-      checkCardsAmount(imageCard);
-      appendImageCards(imageCard);
-      lightbox.refresh();
-    });
+  imageCardsService.fetchCards().then(imageCard => {
+    checkCardsAmount(imageCard);
+    appendImageCards(imageCard);
+    lightbox.refresh();
+  });
 }
 
 function appendImageCards(imageCard) {
@@ -80,10 +75,14 @@ function clearGallery() {
 
 function checkCardsAmount(imageCard) {
   cardsCounter = cardsCounter + imageCard.hits.length;
-  isAll = cardsCounter < imageCard.totalHits;
-  if (!isAll) {
-    loadMoreBtn.style.display = '';
+  isAllCardsLoaded = cardsCounter < imageCard.totalHits;
+  if (!isAllCardsLoaded) {
+    loadMoreBtn.style.display = 'none';
+  }
+
+  if (!isAllCardsLoaded && cardsCounter > 40) {
+    //cardsCounter > amount of pictures in api request ( per_page parameter )
     Notiflix.Notify.warning("We're sorry, but you've reached the end of search results.");
   }
-  return isAll;
+  return isAllCardsLoaded;
 }
